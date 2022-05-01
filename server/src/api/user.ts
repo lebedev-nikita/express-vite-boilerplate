@@ -1,5 +1,6 @@
-import { RequestHandler } from "../lib/file-routing";
 import * as yup from "yup";
+
+import { RequestHandler } from "../lib/file-routing";
 
 const schema = yup
   .object({

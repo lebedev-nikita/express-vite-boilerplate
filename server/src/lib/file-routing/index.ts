@@ -1,9 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
 // TODO: добавить автовыведение типа вместо 'any'
-export type RequestHandler = (req: Request, res: Response) => Promise<any>;
+export type RequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
 interface Handlers {
   get?: RequestHandler;
@@ -41,17 +41,17 @@ const resolveHandlers = async (directory: string, reqPath: string): Promise<Hand
 export const createFileRouter = (directory: string) => {
   const router = Router();
 
-  router.use("/", async (req, res) => {
+  router.use("/", async (req, res, next) => {
     const handlers = await resolveHandlers(directory, req.path);
     let ret: any;
 
     try {
       if (req.method == "GET" && "get" in handlers) {
-        ret = await handlers.get(req, res);
+        ret = await handlers.get(req, res, next);
       } else if (req.method == "POST" && "post" in handlers) {
-        ret = await handlers.post(req, res);
+        ret = await handlers.post(req, res, next);
       } else if ("default" in handlers) {
-        ret = await handlers.default(req, res);
+        ret = await handlers.default(req, res, next);
       } else {
         return void res.sendStatus(400);
       }

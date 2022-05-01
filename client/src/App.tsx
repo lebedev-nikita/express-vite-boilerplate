@@ -1,8 +1,10 @@
-import { AppBar, Tab, Tabs, IconButton } from "@mui/material";
-import { QuestionMark as QuestionMarkIcon } from "@mui/icons-material";
 import { Route, Routes, useLocation, Link } from "react-router-dom";
-import Home from "./pages/Home";
+
+import { QuestionMark as QuestionMarkIcon } from "@mui/icons-material";
+import { AppBar, Tab, Tabs, IconButton } from "@mui/material";
+
 import AnotherPage from "./pages/AnotherPage";
+import Home from "./pages/Home";
 
 export default () => {
   const location = useLocation();
@@ -20,13 +22,13 @@ export default () => {
           <Tab component={Link} className="font-bold" label="Tab 1" value="/" to="/" />
           <Tab component={Link} className="font-bold" label="Tab 2" value="/tab2" to="/tab2" />
         </Tabs>
-        <a href="https://google.com" target="_blank">
+        <a href="https://google.com" target="_blank" rel="noreferrer">
           <IconButton className="text-white">
             <QuestionMarkIcon />
           </IconButton>
         </a>
       </AppBar>
-      <div className="w-full mt-6 p-2 bg-gray-100">
+      <div className="w-full mt-[48px] p-2 bg-gray-100">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tab2" element={<AnotherPage />} />
