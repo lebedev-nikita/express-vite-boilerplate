@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import { LocalizationProvider } from "@mui/lab";
@@ -8,6 +9,7 @@ import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 
 import App from "./App";
 import "./public/index.css";
+import { store } from "./redux/store";
 
 const theme = createTheme({
   palette: {
@@ -21,18 +23,32 @@ const theme = createTheme({
         elevation: 2,
       },
     },
+    MuiSnackbar: {
+      defaultProps: {
+        autoHideDuration: 10_000,
+        anchorOrigin: { vertical: "top", horizontal: "right" },
+      },
+    },
+    MuiAlert: {
+      defaultProps: {
+        elevation: 6,
+        variant: "filled",
+      },
+    },
   },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>
+    <CssBaseline />
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <CssBaseline />
-      <React.StrictMode>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </React.StrictMode>
+      <BrowserRouter>
+        <Provider store={store}>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </Provider>
+      </BrowserRouter>
     </LocalizationProvider>
   </ThemeProvider>
 );

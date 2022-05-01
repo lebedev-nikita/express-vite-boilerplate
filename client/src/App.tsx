@@ -1,10 +1,11 @@
 import { Route, Routes, useLocation, Link } from "react-router-dom";
 
 import { QuestionMark as QuestionMarkIcon } from "@mui/icons-material";
-import { AppBar, Tab, Tabs, IconButton } from "@mui/material";
+import { AppBar, Tab, Tabs, IconButton, Snackbar } from "@mui/material";
 
-import AnotherPage from "./pages/AnotherPage";
-import Home from "./pages/Home";
+import Notifications from "./components/common/Notifications";
+import AnotherPage from "./components/pages/AnotherPage";
+import Home from "./components/pages/Home";
 
 export default () => {
   const location = useLocation();
@@ -34,6 +35,7 @@ export default () => {
           <Route path="/tab2" element={<AnotherPage />} />
         </Routes>
       </div>
+      <Notifications />
     </div>
   );
 };
