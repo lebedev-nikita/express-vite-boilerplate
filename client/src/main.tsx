@@ -35,6 +35,11 @@ const theme = createTheme({
         variant: "filled",
       },
     },
+    MuiButton: {
+      defaultProps: {
+        variant: "contained",
+      },
+    },
   },
 });
 
