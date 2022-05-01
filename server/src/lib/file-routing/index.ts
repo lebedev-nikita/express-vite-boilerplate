@@ -38,7 +38,7 @@ const resolveHandlers = async (directory: string, reqPath: string): Promise<Hand
   return {};
 };
 
-export const createRouter = (directory: string) => {
+export const createFileRouter = (directory: string) => {
   const router = Router();
 
   router.use("/", async (req, res) => {

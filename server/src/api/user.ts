@@ -10,6 +10,7 @@ const schema = yup
 
 export const get: RequestHandler = async (req) => {
   const params = schema.validateSync(req.query);
+  console.log(req.query);
 
   const names = ["John", "Mike", "Alex"];
 
