@@ -11,8 +11,8 @@ export const withErrorNotifications =
     if (result.error) {
       const status = result.error.status;
       const url = result.meta?.request.url ?? "";
-      const msg = (result.error.data as { error } | undefined)?.error ?? "";
-      api.dispatch(setError(`Ошибка ${status} : ${url} : ${msg}`));
+      const { error_message = "" } = (result.error.data as any) ?? {};
+      api.dispatch(setError(`Ошибка ${status} : ${url} : ${error_message}`));
     }
     return result;
   };

@@ -2,14 +2,31 @@ import { Router, Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
-// TODO: добавить автовыведение типа вместо 'any'
-export type RequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<any>;
+export type RequestHandler = (params: RequestProps) => Promise<any>;
 
 interface Handlers {
   get?: RequestHandler;
   post?: RequestHandler;
   default?: RequestHandler;
 }
+
+export interface RequestProps {
+  user_id: string;
+  params: Record<string, any>;
+  req: Request;
+  res: Response;
+}
+
+const prepareRequestProps = (req: Request, res: Response): RequestProps => {
+  let params = {};
+  if (req.query) {
+    params = { ...params, ...req.query };
+  }
+  if (req.body && req.headers["content-type"] == "application/json") {
+    params = { ...params, ...req.body };
+  }
+  return { params, req, res, user_id: req.cookies.login };
+};
 
 const resolveHandlers = async (directory: string, reqPath: string): Promise<Handlers> => {
   let filePath = directory;
@@ -41,23 +58,25 @@ const resolveHandlers = async (directory: string, reqPath: string): Promise<Hand
 export const createFileRouter = (directory: string) => {
   const router = Router();
 
-  router.use("/", async (req, res, next) => {
+  router.use("/", async (req, res) => {
     const handlers = await resolveHandlers(directory, req.path);
     let ret: any;
 
     try {
+      const requestProps = prepareRequestProps(req, res);
+
       if (req.method == "GET" && "get" in handlers) {
-        ret = await handlers.get(req, res, next);
+        ret = await handlers.get(requestProps);
       } else if (req.method == "POST" && "post" in handlers) {
-        ret = await handlers.post(req, res, next);
+        ret = await handlers.post(requestProps);
       } else if ("default" in handlers) {
-        ret = await handlers.default(req, res, next);
+        ret = await handlers.default(requestProps);
       } else {
         return void res.sendStatus(400);
       }
     } catch (error) {
       console.error(error);
-      return void res.status(500).json({ error: error.message });
+      return void res.status(500).json({ error_message: error.message });
     }
 
     if (ret !== undefined) {

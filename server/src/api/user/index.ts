@@ -9,8 +9,8 @@ const schema = yup
   })
   .required();
 
-export const get: RequestHandler = async (req) => {
-  const { user_id } = schema.validateSync(req.query);
+export const get: RequestHandler = async ({ params }) => {
+  const { user_id } = schema.validateSync(params);
 
   return getUserById(user_id);
 };
