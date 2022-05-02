@@ -7,8 +7,7 @@ import { LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 
-import App from "./App";
-import "./public/index.css";
+import App from "./components/_app";
 import { store } from "./redux/store";
 
 const theme = createTheme({

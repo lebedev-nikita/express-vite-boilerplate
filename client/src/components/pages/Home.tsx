@@ -34,7 +34,7 @@ export default () => {
       <Paper className="flex-none w-[450px] p-1 flex flex-col space-y-1">
         <Typography variant="h5">Router Demo</Typography>
         <pre>{JSON.stringify(url.query, null, 2)}</pre>
-        <Link to={url.setQuery({ urlParam_2: "CHANGED_BY_BUTTON" })}>
+        <Link to={url.setQuery({ param_2: "CHANGED_BY_BUTTON" })}>
           <Button>change param 2</Button>
         </Link>
         <Link to={url.reset("/")}>
