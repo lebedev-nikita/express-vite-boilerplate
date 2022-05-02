@@ -16,12 +16,12 @@ export default () => {
 
   return (
     <>
-      <Snackbar open={!!error} onClose={closeError}>
+      <Snackbar open={!!error}>
         <Alert severity="error" onClose={closeError}>
           {error}
         </Alert>
       </Snackbar>
-      <Snackbar open={!!info} onClose={closeInfo}>
+      <Snackbar open={!!info}>
         <Alert severity="info" onClose={closeInfo}>
           {info}
         </Alert>

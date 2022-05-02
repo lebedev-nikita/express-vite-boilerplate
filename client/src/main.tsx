@@ -40,6 +40,11 @@ const theme = createTheme({
         variant: "contained",
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        variant: "outlined",
+      },
+    },
   },
 });
 
