@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
+    "strictNullChecks": true,
     "skipLibCheck": true
   }
 }

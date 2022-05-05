@@ -1,6 +1,5 @@
 import { listUsers } from "../../../sensors/mock/user";
-import { RequestHandler } from "../../lib/file-routing";
 
-export const get: RequestHandler = async () => {
+export const get = async () => {
   return listUsers();
 };

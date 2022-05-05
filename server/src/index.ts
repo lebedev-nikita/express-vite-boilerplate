@@ -1,24 +1,19 @@
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
 import express from "express";
 import path from "path";
 
-import { authMiddleware } from "./lib/auth";
-import { createFileRouter } from "./lib/file-routing";
+import { logger } from "./lib/logger";
+import serverLogger from "./lib/logger/serverLogger";
+import { configureServer } from "./lib/server";
 
 const SERVER_PORT = process.env.SERVER_PORT;
 
-const app = express()
-  .use(cookieParser())
-  .use(bodyParser.json())
-  .use(bodyParser.urlencoded({ extended: true, inflate: true }));
+const app = express();
 
-if (process.env.SERVER_AUTH == "true") {
-  app.use(authMiddleware);
-}
-
-app.use("/api", createFileRouter(path.resolve(__dirname, "api")));
+configureServer(app, {
+  apiDir: path.resolve(__dirname, "api"),
+  writeLogs: serverLogger,
+});
 
 app.listen(SERVER_PORT, () => {
-  console.log(`server is listening on http://localhost:${SERVER_PORT}`);
+  logger.info(`server is listening on http://localhost:${SERVER_PORT}`);
 });

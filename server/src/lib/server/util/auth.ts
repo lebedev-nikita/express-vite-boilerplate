@@ -1,6 +1,6 @@
-import type { Handler } from "express";
+import type { Handler, Request, Response } from "express";
 
-export const authMiddleware: Handler = (req, res, next) => {
+const middleware: Handler = (req, res, next) => {
   if (/.css|.js|.jpg|.jpeg|.ico|.png|woff2/gi.test(req.path)) {
     return next();
   }
@@ -37,4 +37,13 @@ export const authMiddleware: Handler = (req, res, next) => {
     `?getParamsBeforeRedirect=${JSON.stringify(req.query)}`;
   const authUrl = `http://triada.consultant.ru/AuthRedirectService/?callback=${callback}`;
   res.redirect(302, authUrl);
+};
+
+const getUserId = (req: Request, res: Response) => {
+  return req.cookies.login as string | undefined;
+};
+
+export default {
+  middleware,
+  getUserId,
 };
