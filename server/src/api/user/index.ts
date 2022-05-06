@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
-import { getUserById, MAX_USER_ID, MIN_USER_ID } from "../../../sensors/mock/user";
 import { RequestProps } from "../../lib/server";
+import { getUserById, MAX_USER_ID, MIN_USER_ID } from "../../sensors/mock/user";
 
 const schema = yup
   .object({

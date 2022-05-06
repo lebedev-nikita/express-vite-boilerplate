@@ -35,7 +35,7 @@ const middleware: Handler = (req, res, next) => {
   const callback =
     `${req.protocol}://${req.headers["last-host"]}${req.baseUrl}${req.path}` +
     `?getParamsBeforeRedirect=${JSON.stringify(req.query)}`;
-  const authUrl = `http://triada.consultant.ru/AuthRedirectService/?callback=${callback}`;
+  const authUrl = `${process.env.AUTH_URL}/?callback=${callback}`;
   res.redirect(302, authUrl);
 };
 

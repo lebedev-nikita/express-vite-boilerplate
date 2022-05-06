@@ -14,6 +14,10 @@ configureServer(app, {
   writeLogs: serverLogger,
 });
 
+if (process.env.MODE == "production") {
+  app.use("/", express.static(path.resolve(__dirname, "../../client/dist")));
+}
+
 app.listen(SERVER_PORT, () => {
   logger.info(`server is listening on http://localhost:${SERVER_PORT}`);
 });

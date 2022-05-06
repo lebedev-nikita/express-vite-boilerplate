@@ -1,4 +1,4 @@
-import { listUsers } from "../../../sensors/mock/user";
+import { listUsers } from "../../sensors/mock/user";
 
 export const get = async () => {
   return listUsers();

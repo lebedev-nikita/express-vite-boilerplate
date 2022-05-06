@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
-    "skipLibCheck": true
-  }
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": ["./src"],
+  "exclude": ["./build"]
 }
