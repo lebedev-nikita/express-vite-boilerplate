@@ -2,30 +2,31 @@ import dayjs from "dayjs";
 import { Request } from "express";
 import { Pool } from "pg";
 
+const pool = new Pool({
+  host: process.env.SERVER_STAT_PG_HOST,
+  port: Number(process.env.SERVER_STAT_PG_PORT!),
+  database: process.env.SERVER_STAT_PG_DB,
+  user: process.env.SERVER_STAT_PG_USER,
+  password: process.env.SERVER_STAT_PG_PASSWORD,
+});
+
 export const pg = {
   init() {
-    this.pool = new Pool({
-      host: process.env.SERVER_STAT_PG_HOST,
-      port: +process.env.SERVER_STAT_PG_PORT!,
-      database: process.env.SERVER_STAT_PG_DB,
-      user: process.env.SERVER_STAT_PG_USER,
-      password: process.env.SERVER_STAT_PG_PASSWORD,
-    });
-    this.pool.connect();
+    pool.connect();
   },
 
   async log(info: Info, error?: Error) {
     const service = process.env.SERVICE;
     const month = dayjs().format("YYYYMM");
 
-    const { rows: table } = await this.pool.query(`
+    const { rows: table } = await pool.query(`
       SELECT *
       FROM information_schema.tables
       WHERE table_schema = 'stat' and table_name = 'events_${month}_${service}'
     `);
 
     if (table.length == 0) {
-      await this.pool.query(`
+      await pool.query(`
         CREATE TABLE stat.events_${month}_${service}
         PARTITION OF stat.events for values from ('${month}','${service}') to ('${month}','${service} ');
   
@@ -41,7 +42,7 @@ export const pg = {
     }
 
     const { user_id, query, params, query_time, ip, url, domain } = info;
-    await this.pool.query(
+    await pool.query(
       `
         INSERT INTO stat.events
         (created_at, login, month, service, query, params, query_time, ip, url, domain, fail_hash, fail_details)

@@ -9,6 +9,8 @@ export interface RequestProps {
   res: Response;
 }
 
+export type RequestHandler = (props: RequestProps) => any;
+
 export const getProps = (req: Request, res: Response): RequestProps => {
   const params = {
     ...req.query,

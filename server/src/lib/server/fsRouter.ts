@@ -1,68 +1,52 @@
 import { Router, Request, Response } from "express";
 import fs from "fs";
-import path from "path";
 
-import errorTransmitter from "./util/errorTransmitter";
+import errorTransporter from "./util/errorTransporter";
+import { getProps, RequestHandler, RequestProps } from "./util/getProps";
 
-interface Handlers {
-  get?: (any) => Promise<any>;
-  post?: (any) => Promise<any>;
-  default?: (any) => Promise<any>;
-}
-
-export default (apiDir: string, getProps: (req, res) => any) => {
+export default (apiDir: string) => {
   const router = Router();
 
   router.use("/", async (req: Request, res: Response) => {
-    const handlers = await resolveHandlers(apiDir, req.path);
-    let ret: any;
-
     try {
-      if (req.method == "GET" && "get" in handlers) {
-        ret = await handlers.get!(getProps(req, res));
-      } else if (req.method == "POST" && "post" in handlers) {
-        ret = await handlers.post!(getProps(req, res));
-      } else if ("default" in handlers) {
-        ret = await handlers.default!(getProps(req, res));
-      } else {
-        return void res.sendStatus(400);
+      const handlerPath = apiDir + req.path;
+      const ret = await handleRequest(req.method, handlerPath, getProps(req, res));
+      if (ret !== undefined && !res.headersSent) {
+        res.json(ret);
       }
     } catch (error) {
-      errorTransmitter.setError(req, res, error);
-      return res.status(500).json({ error_message: error.message });
-    }
-
-    if (ret !== undefined && !res.headersSent) {
-      return res.json(ret);
+      errorTransporter.setError(req, res, error);
+      if (error.message == "404") {
+        res.sendStatus(404);
+        return;
+      }
+      res.status(500).json({ error_message: error.message });
     }
   });
 
   return router;
 };
 
-const resolveHandlers = async (apiDir: string, reqPath: string): Promise<Handlers> => {
-  let filePath = apiDir;
-
-  if (reqPath !== "/") {
-    if (reqPath.endsWith("/")) {
-      filePath = path.resolve(filePath, ...reqPath.slice(1, -1).split("/"));
-    } else {
-      filePath = path.resolve(filePath, ...reqPath.slice(1).split("/"));
-    }
+const handleRequest = async (method: string, handlerPath: string, props: RequestProps) => {
+  if (handlerPath.endsWith("/")) {
+    handlerPath = handlerPath.slice(0, -1);
   }
 
   const pathVariants = [
-    filePath + ".ts",
-    filePath + ".js",
-    path.resolve(filePath, "index.ts"),
-    path.resolve(filePath, "index.js"),
+    handlerPath + ".ts",
+    handlerPath + ".js",
+    handlerPath + "/index.ts",
+    handlerPath + "/index.js",
   ];
 
   for (const file of pathVariants) {
     if (fs.existsSync(file)) {
-      return await import(file);
+      const handlers = await import(file);
+      const handler = handlers[method] as RequestHandler | undefined;
+      if (handler === undefined) break;
+      return await handler(props);
     }
   }
 
-  return {};
+  throw new Error("404");
 };

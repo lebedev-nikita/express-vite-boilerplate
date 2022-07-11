@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-import { getLogger } from "..";
+import { getLogger } from "../../../logger";
 import { getInfo, pg } from "./_stat";
 
 const errLogger = getLogger("error");

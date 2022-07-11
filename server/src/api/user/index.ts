@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { RequestProps } from "../../lib/server";
+import { RequestHandler } from "../../lib/server";
 import { getUserById, MAX_USER_ID, MIN_USER_ID } from "../../sensors/mock/user";
 
 const schema = yup
@@ -9,7 +9,7 @@ const schema = yup
   })
   .required();
 
-export const get = async ({ params }: RequestProps) => {
+export const GET: RequestHandler = async ({ params }) => {
   const { user_id } = schema.validateSync(params);
 
   return getUserById(user_id);

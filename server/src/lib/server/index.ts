@@ -4,17 +4,16 @@ import responseTime from "response-time";
 
 import fsRouter from "./fsRouter";
 import auth from "./util/auth";
-import errorTransmitter from "./util/errorTransmitter";
-import { getProps } from "./util/getProps";
+import errorTransporter from "./util/errorTransporter";
+import writeLogs from "./util/writeLogs";
 
-export type { RequestProps } from "./util/getProps";
+export type { RequestProps, RequestHandler } from "./util/getProps";
 
 export interface ServerOptions {
   apiDir: string;
-  writeLogs?: (p: { req: Request; query_time: number; user_id?: string; error? }) => any;
 }
 
-export const configureServer = (app: Express, { apiDir, writeLogs }: ServerOptions) => {
+export const configureServer = (app: Express, { apiDir }: ServerOptions) => {
   const needAuth = process.env.SERVER_AUTH == "true";
 
   return app
@@ -24,10 +23,10 @@ export const configureServer = (app: Express, { apiDir, writeLogs }: ServerOptio
     .use((req, res, next) => (needAuth ? auth.middleware(req, res, next) : next()))
     .use(
       responseTime((req: Request, res: Response, query_time) => {
-        const user_id = auth.getUserId(req, res);
-        const error = errorTransmitter.getError(req, res);
-        writeLogs?.({ req, query_time, user_id, error });
+        const user_id = auth.getUserId(req, res)!;
+        const error = errorTransporter.getError(req, res);
+        writeLogs({ req, query_time, user_id, error });
       })
     )
-    .use("/api", fsRouter(apiDir, getProps));
+    .use("/api", fsRouter(apiDir));
 };
