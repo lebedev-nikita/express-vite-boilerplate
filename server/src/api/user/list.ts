@@ -1,6 +1,8 @@
 import { RequestHandler } from "../../lib/server";
 import { listUsers } from "../../sensors/mock/user";
 
-export const POST: RequestHandler = async () => {
+export const GET: RequestHandler = async () => {
   return listUsers();
 };
+
+export const POST = GET;

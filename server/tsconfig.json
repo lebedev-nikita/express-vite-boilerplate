@@ -10,5 +10,4 @@
     "checkJs": true
   },
   "include": ["./src"],
-  "exclude": ["./build"]
 }
